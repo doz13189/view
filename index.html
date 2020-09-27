@@ -14,24 +14,31 @@
 
         const app = createApp({
             data: () => ({
-                title: 'hello',
-                message: 'world',
-                total: 0
+                a: 0,
+                b: 1
             }),
             methods: {
                 increment () {
-                    return this.total + 1
+                    console.log('increment')
+                    return this.a++
+                },
+                decrement () {
+                    console.log('decrement')
+                    return this.a--
+                }
+            },
+            computed: {
+                sum() {
+                    return this.a + this.b
                 }
             },
             render () {
-                return createVNode('div', {
-                    // onClick: () => console.log('hello'),
-                    onClick: () => {
-                        console.log('onclick', this.total)
-                        this.total++
-                    },
-                    style: 'color:#ff0000'
-                }, this.total)
+                return createVNode('div', { style: 'color:#ff0000' }, [
+                    createVNode('button', { style: 'color:#ff0000', onClick: () => this.increment() }, '+'),
+                    createVNode('button', { style: 'color:#ff0000', onClick: () => this.decrement() }, '-'),
+                    createVNode('div', { style: 'color:#ff0000' }, this.a),
+                    createVNode('div', { style: 'color:#ff0000' }, this.sum())
+                ])
             }
         }).mount('#app', document)
     </script>

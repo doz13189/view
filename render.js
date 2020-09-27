@@ -1,16 +1,14 @@
 import nodeOps from './nodeOps.js'
+import { createVNode } from './text/renderer.js'
 
 function patch(prevNode, nextNode, container) {
+
     let el
     if (prevNode.type !== nextNode.type) {
         el = nextNode.el = nodeOps.create(nextNode.type)
         nodeOps.append(container, el)
     } else {
         el = nextNode.el = prevNode.el
-    }
-
-    if (prevNode.children !== nextNode.children) {
-        nodeOps.insertHtml(el, nextNode.children)
     }
 
     for (const key in nextNode.props) {
@@ -30,9 +28,19 @@ function patch(prevNode, nextNode, container) {
         }
     }
 
-
-
-
+    if (nextNode.children instanceof Array) {
+        nextNode.children.forEach((child, index) => {
+            if (prevNode.children.hasOwnProperty(index)) {
+                patch(prevNode.children[index], child, el)
+            } else {
+                patch(createVNode(), child, el)
+            }
+        })
+    } else {
+        if (prevNode.children !== nextNode.children) {
+            nodeOps.insertHtml(el, nextNode.children)
+        }
+    }
 }
 
 export { patch }

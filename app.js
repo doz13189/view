@@ -4,24 +4,29 @@ import { createVNode } from './vnode.js'
 import { effect, track, trigger } from './reactive.js'
 
 function createApp(args) {
-    const { data, render } = args
+    const { data, methods, computed: computedData, render } = args
     const app = {}
+    const ctx = { ...data(), ...methods, ...computedData }
     // const rawData = data()
 
-    app.publicCtx = new Proxy(data(), {
+    app.publicCtx = new Proxy(ctx, {
         get(target, key, receiver) {
             // console.log('get')
             track(target, key)
             return target[key]
         },
         set(target, key, value, receiver) {
-            // console.log('set', target, key, value, receiver)
-            const res = target[key] = value
+            target[key] = value
             trigger(target, key)
-            return res
+            console.log('set', target, key, value, receiver)
+            return true
+
+            // const res = target[key] = value
+            // (index):24 Uncaught TypeError: 'set' on proxy: trap returned falsish for property 'total'
+            // return res
         }
     })
-    app.render = render
+    // app.render = render
 
     app.mount = function(selector, document) {
         const container = nodeOps.querySelector(selector, document)
