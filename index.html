@@ -1,19 +1,40 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vue Like App</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
 </head>
-
 <body>
     <div id="app"></div>
+    <script type='module'>
+        import { createApp } from './app.js'
+        import { createVNode } from './vnode.js'
+        // import nodeOps from './nodeOps.js'
 
-    <script type="module">
-        
+        const app = createApp({
+            data: () => ({
+                title: 'hello',
+                message: 'world',
+                total: 0
+            }),
+            methods: {
+                increment () {
+                    return this.total + 1
+                }
+            },
+            render () {
+                console.log(this)
+                return createVNode('div', {
+                    // onClick: () => console.log('hello'),
+                    onClick: () => {
+                        console.log('onclick', this.total)
+                        this.total++
+                    },
+                    style: 'color:#ff0000'
+                }, this.total)
+            }
+        }).mount('#app', document)
     </script>
 </body>
-
 </html>
