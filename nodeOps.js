@@ -16,8 +16,6 @@ export default  {
         target.innerHTML = value
     },
     on(target, eventType, callback) {
-        
-        console.log(target, eventType, callback)
         target.addEventListener(eventType, () => {
             callback()
         })
